@@ -1,0 +1,23 @@
+{
+  "name": "BackEnd",
+  "version": "1.0.1",
+  "description": "Proyecto semestral del ramo Paralelas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./bin/www.js"
+  },
+  "keywords": [],
+  "author": "Felipe Reyes, Nelson Roa, Carlos Rodriguez",
+  "license": "FNC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "pg": "^7.7.1",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.42.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  }
+}
