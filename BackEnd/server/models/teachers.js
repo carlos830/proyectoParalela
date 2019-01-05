@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (sequelize, DataTypes) =>{
-    const students=sequelize.define('academia.students',{
+    const teachers=sequelize.define('academia.teachers',{
         pk:{
             primaryKey:true,
             autoIncrement: true,
@@ -16,20 +16,20 @@ module.exports = (sequelize, DataTypes) =>{
 
 
     });
-    
-    students.associate = function(models) {
-        students.belongsTo(models.tokens, {
+
+    teachers.associate = function(models) {
+        teachers.belongsTo(models.tokens, {
           onDelete: "CASCADE",
           foreignKey: {
             allowNull: true
           }
         }),
-        students.belongsTo(models.finished_courses,{
+        teachers.belongsTo(models.courses,{
             onDelete: "CASCADE",
-            foreignKey:{
-                allowNull: true
+            foreignKey: {
+                allowNull:True   
             }
         })
       }
-    return students;
+    return teachers;
 }
