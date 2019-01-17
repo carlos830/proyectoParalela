@@ -1,0 +1,24 @@
+{
+    "name": "Proyecto",
+    "version": "1.0.0",
+    "description": "Este es el proyecto de paralelas que trata de un Back-End\r  Ejecutar comando",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "nodemon ./bin/www.js"
+    },
+    "keywords": [],
+    "author": "Felipe Reyes, Nelson Roa, Carlos Rodriguez",
+    "license": "ISC",
+    "dependencies": {
+        "body-parser": "^1.18.3",
+        "express": "^4.16.4",
+        "pg": "^7.8.0",
+        "pg-hstore": "^2.3.2",
+        "sequelize": "^4.42.0",
+        "sequelize-cli": "^5.4.0"
+    },
+    "devDependencies": {
+        "nodemon": "^1.18.9"
+    }
+}
