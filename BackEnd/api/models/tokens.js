@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
         email: DataTypes.STRING,
         api_key: DataTypes.STRING,
         role: DataTypes.STRING
+
+
     })
     return Tokens;
 }
