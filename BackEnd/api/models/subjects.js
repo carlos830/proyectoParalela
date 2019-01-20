@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
         created: DataTypes.DATE
 
 
-    })
+    });
+    Subjects.associate = function(models) {
+        Subjects.hasMany(models.courses, { as: 'Subjects', foreignKey: 'subject_fk' });
+    };
     return Subjects;
 }
