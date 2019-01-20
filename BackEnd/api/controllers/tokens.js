@@ -5,24 +5,29 @@ const Tokens = models.tokens;
 const crypto = require('crypto');
 const secret = 'utem2018';
 
+function encriptar(text) {
+    const hash = crypto.createHash('sha512');
+    const data = hash.update(text, secret);
+    const hashFin = data.digest('hex');
+    return hashFin;
+}
+
 function authenticate(req, res) {
     const params = req.body;
     const rut = params.rut;
     const password = params.password;
-    const hash = crypto.createHash('sha512');
-    const data = hash.update(password, secret);
-    const hashFin = data.digest('hex');
+    const hashOld = encriptar(password);
     Tokens.findOne({
         where: { rut: rut }
     })
 
     .then(token => {
             if (!token) {
-                res.status(404).send({ message: "El usuario no existe" });
+                res.status(400).send({ message: "El usuario no existe" });
             } else {
                 //Si el usuario existe comprobar la constraseña
 
-                if (hashFin == token.password) {
+                if (hashOld == token.password) {
                     //Si la constraseña es la misma, devuleve los datos del usuario logueado
                     if (params.gethash) {
                         //Si viene un hash devolvermos un token de jwt-simple
@@ -75,6 +80,8 @@ function chance(req, res) {
     const rut = params.rut;
     const password = params.password;
     const newPassword = params.temporal
+    const hashOld = encriptar(password);
+    const hashNew = encriptar(newPassword);
 
     Tokens.findOne({
         where: { rut: rut }
@@ -84,9 +91,9 @@ function chance(req, res) {
                 if (!token) { //no existe usuario
                     res.status(400).send({ message: "El usuario no existe" });
                 } else { //Si existe comprobar contraseña
-                    if (token.password == password) {
+                    if (token.password == hashOld) {
                         token.updateAttributes({
-                            password: newPassword
+                            password: hashNew
                         })
                         res.status(200).send({ token });
                     } else {
