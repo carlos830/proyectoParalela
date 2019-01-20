@@ -20,7 +20,7 @@ function authenticate(req, res) {
             if (!token) {
                 res.status(404).send({ message: "El usuario no existe" });
             } else {
-                //Si el usuario existe comprobar la constraseña
+                //Si el usuario existe comprobar la constrasenia
 
                 if (hashFin == token.password) {
                     //Si la constraseña es la misma, devuleve los datos del usuario logueado
