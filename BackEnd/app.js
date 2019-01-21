@@ -20,6 +20,8 @@ app.use((req, res, next) => {
 //Rutas
 
 require('./api/routes/tokens.js')(app);
+require('./api/routes/students')(app);
+
 
 app.get('*', (req, res) => {
     res.status(200).send({ message: "Bienvenido" });
