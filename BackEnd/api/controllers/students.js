@@ -24,7 +24,6 @@ function course_rest_impl(req, res) {
             } else {
                 if (params.api_key = api_key) {
                     res.status(200).send(token);
-                    //res.json(token);
                 } else {
                     res.status(404).send({ message: "la contraseña es imcorrecta" })
 
@@ -43,10 +42,3 @@ function course_rest_impl(req, res) {
 module.exports = {
     course_rest_impl
 }
-
-
-/*select l.rut, l.first_name, s.name  from students as l inner Join finished_courses as r
- on l.pk = r.student_fk
- inner join courses as d on r.course_fk = d.pk
- inner join subjects as s on s.pk= d.subject_fk
- order by l.rut*/

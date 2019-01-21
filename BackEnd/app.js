@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 });
 
 //Rutas
-
+require('./api/routes/courses')(app);
 require('./api/routes/tokens.js')(app);
 require('./api/routes/students')(app);
 
