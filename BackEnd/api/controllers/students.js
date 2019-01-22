@@ -3,11 +3,7 @@ const Sequelize = require('sequelize');
 const { client } = require('pg');
 const sequelize = new Sequelize('postgres://postgres:dragon830@localhost:5432/paralelas')
 const models = require('../models');
-const Students = models.students;
-const Token = models.tokens;
-const Finished_Courses = models.finished_courses;
-const Courses = models.courses;
-const Subjects = models.subjects;
+
 //const Op = Sequelize.Op;
 function Student(req, res) {
     const params = req.body;

@@ -24,6 +24,7 @@ require('./api/routes/students')(app);
 require('./api/routes/teachers')(app);
 
 
+
 app.get('*', (req, res) => {
     res.status(200).send({ message: "Bienvenido" });
 })
