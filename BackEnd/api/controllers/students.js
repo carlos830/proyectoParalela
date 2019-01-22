@@ -9,23 +9,63 @@ const Finished_Courses = models.finished_courses;
 const Courses = models.courses;
 const Subjects = models.subjects;
 //const Op = Sequelize.Op;
-
-function course_rest_impl(req, res) {
+function Student(req, res) {
     const params = req.body;
     const rut = params.rut;
     const api_key = params.api_key;
 
-    sequelize.query(`select a1.api_key ,l.rut, l.first_name, s.name  from tokens as a1 inner join students as l on l.rut = a1.rut inner Join finished_courses as r on l.pk = r.student_fk inner join courses as d on r.course_fk = d.pk inner join subjects as s on s.pk= d.subject_fk where a1.api_key = '${api_key}' and l.rut = ${rut} order by l.rut`, { type: Sequelize.QueryTypes.SELECT })
+    sequelize.query(`select a1.birthdate, a1.first_name as firstName, a1.gender, a1.last_name as lastName, a1.rut from students a1
+    inner join tokens a2 on a1.rut = a2.rut
+    where a2.rut =${rut} and a2.api_key = '${api_key}'`, { type: Sequelize.QueryTypes.SELECT })
 
-    .then(token => {
+    .then(student => {
 
-            if (!token) {
-                res.status(400).send({ message: "no existe estudiante" });
+            if (!student) {
+                res.status(400).send({ message: "No existe estadistica" });
             } else {
                 if (params.api_key = api_key) {
-                    res.status(200).send(token);
+                    res.status(200).send(student);
                 } else {
-                    res.status(404).send({ message: "la contraseña es imcorrecta" })
+                    res.status(404).send({ message: "Necesita volver a logear incorrecta" })
+
+                }
+            }
+
+
+
+        })
+        .catch(err => {
+            res.status(500).send(err);
+        })
+}
+
+function ranking(req, res) {
+    const params = req.body;
+    const rut = params.rut;
+    const api_key = params.api_key;
+
+    sequelize.query(`Select promedio,posicion, desviacion,birthdate,firstName,gender,lastName,rut
+    from (select rut, promedio, ROW_NUMBER () over (order by promedio desc) as posicion, firstName,
+          lastName,gender,desviacion,birthdate,api_key
+          from(select students.rut as rut, round(avg(grade),2) as promedio, students.first_name as firstName,
+               round(coalesce(stddev_samp(finished_courses.grade),0),3) as desviacion, students.birthdate as birthdate,
+               students.gender as gender, students.last_name as lastName, tokens.api_key as api_key
+               from finished_courses join courses 
+               on finished_courses.course_fk = courses.pk 
+               join students on finished_courses.student_fk = students.pk 
+               join tokens on students.rut = tokens.rut
+    group by tokens.api_key,students.rut, students.first_name,students.last_name, students.gender,students.birthdate) as foo) as foo2 
+    where rut = ${rut} and api_key = '${api_key}'`, { type: Sequelize.QueryTypes.SELECT })
+
+    .then(student => {
+
+            if (!student) {
+                res.status(400).send({ message: "No existe estadistica" });
+            } else {
+                if (params.api_key = api_key) {
+                    res.status(200).send(student);
+                } else {
+                    res.status(404).send({ message: "Necesita volver a logear incorrecta" })
 
                 }
             }
@@ -40,5 +80,6 @@ function course_rest_impl(req, res) {
 
 
 module.exports = {
-    course_rest_impl
+    ranking,
+    Student
 }

@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 require('./api/routes/courses')(app);
 require('./api/routes/tokens.js')(app);
 require('./api/routes/students')(app);
+require('./api/routes/teachers')(app);
 
 
 app.get('*', (req, res) => {
