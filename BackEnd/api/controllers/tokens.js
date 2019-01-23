@@ -38,7 +38,7 @@ function authenticate(req, res) {
                         res.status(200).send({ token });
                     }
                 } else {
-                    res.status(404).send({ hashFin });
+                    res.status(404).send({ message: "hola" });
                 }
             }
         })

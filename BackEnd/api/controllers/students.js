@@ -16,13 +16,13 @@ function Student(req, res) {
 
     .then(student => {
 
-            if (!student) {
-                res.status(400).send({ message: "No existe estadistica" });
+            if (student == '') {
+                res.status(400).send({ message: "No existe estudiante" });
             } else {
                 if (params.api_key = api_key) {
                     res.status(200).send(student);
                 } else {
-                    res.status(404).send({ message: "Necesita volver a logear incorrecta" })
+                    res.status(404).send({ message: "Necesita volver a logear " })
 
                 }
             }
@@ -55,13 +55,13 @@ function ranking(req, res) {
 
     .then(student => {
 
-            if (!student) {
-                res.status(400).send({ message: "No existe estadistica" });
+            if (student == '') {
+                res.status(400).send({ message: "No existe ranking" });
             } else {
                 if (params.api_key = api_key) {
                     res.status(200).send(student);
                 } else {
-                    res.status(404).send({ message: "Necesita volver a logear incorrecta" })
+                    res.status(404).send({ message: "Necesita volver a logear" })
 
                 }
             }

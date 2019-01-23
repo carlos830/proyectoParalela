@@ -8,7 +8,6 @@ const Token = models.tokens;
 const Finished_Courses = models.finished_courses;
 const Courses = models.courses;
 const Subjects = models.subjects;
-//const Op = Sequelize.Op;
 
 function estadistica(req, res) {
     const params = req.body;
@@ -26,13 +25,13 @@ function estadistica(req, res) {
        inner join teachers as a4 on a2.teacher_fk = a4.pk where a2.ordinal = ${ordinal} and a2.year = ${year} and a3.code = '${subjectCode}' 
        group by a1.course_fk, a3.name, a2.ordinal, a2.section, a3.code, a3.created, a2.code, a4.birthdate, a4.first_name, a4.last_name, a4.rut, a4.gender, a2.year order by a3.name`, { type: Sequelize.QueryTypes.SELECT })
 
-    .then(token => {
+    .then(estado => {
 
-            if (!token) {
+            if (estado == '') {
                 res.status(400).send({ message: "No existe estadistica" });
             } else {
                 if (params.api_key = api_key) {
-                    res.status(200).send(token);
+                    res.status(200).send(estado);
                 } else {
                     res.status(404).send({ message: "Necesita volver a logear incorrecta" })
 
@@ -61,13 +60,13 @@ function estadistica_student(req, res) {
     where a6.api_key = '${api_key}' and a6.rut = ${rut}
     `, { type: Sequelize.QueryTypes.SELECT })
 
-    .then(token => {
+    .then(estado_student => {
 
-            if (!token) {
+            if (estado_student == '') {
                 res.status(400).send({ message: "Estudiante no ha cursado cursos o no existe" });
             } else {
                 if (params.api_key = api_key) {
-                    res.status(200).send(token);
+                    res.status(200).send(estado_student);
                 } else {
                     res.status(404).send({ message: "Necesita volver a logearse" })
 
@@ -95,13 +94,13 @@ function estadistica_teachers(req, res) {
      inner join teachers as a4 on a2.teacher_fk = a4.pk inner join tokens as a5 on a4.rut=a5.rut 
     where a4.rut = ${rut} and a5.api_key = '${api_key}' 
     group by a1.course_fk, a3.name, a2.ordinal, a2.section, a3.code, a3.created, a2.code, a4.birthdate, a4.first_name, a4.last_name, a4.rut, a4.gender, a2.year order by a3.name`, { type: Sequelize.QueryTypes.SELECT })
-        .then(token => {
+        .then(estado_teacher => {
 
-            if (!token) {
+            if (estado_teacher == '') {
                 res.status(400).send({ message: "Profesor no ha impartido cursos o no existe" });
             } else {
                 if (params.api_key = api_key) {
-                    res.status(200).send(token);
+                    res.status(200).send(estado_teacher);
                 } else {
                     res.status(404).send({ message: "Necesita volver a logearse" })
 

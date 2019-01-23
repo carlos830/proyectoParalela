@@ -14,7 +14,7 @@ function teachers(req, res) {
 
     .then(teacher => {
 
-            if (!teacher) {
+            if (teacher == '') {
                 res.status(400).send({ message: "No existe docente" });
             } else {
                 if (params.api_key = api_key) {
