@@ -1,4 +1,9 @@
 'use strict';
+const nodemailer = require('nodemailer');
+const Sequelize = require('sequelize');
+const { client } = require('pg');
+const sequelize = new Sequelize('postgres://postgres:dragon830@localhost:5432/paralelas')
+const smtpTransport = require('nodemailer-smtp-transport');
 const jwt = require('../services/jwt');
 const models = require('../models');
 const Tokens = models.tokens;
@@ -109,10 +114,62 @@ function chance(req, res) {
         })
 }
 
+function mail(req, res) {
+    const params = req.body;
+    const api_key = params.api_key;
+    const email = params.email;
+    const html = params.html;
+    const message = params.message;
+    const subject = params.subject;
+    const token = params.token;
+    const user = 'utemparalelas@gmail.com';
+    const pass = 'utem2018';
+    sequelize.query(`select  a1.email from tokens as a1 inner join students a2 on a1.rut = a2.rut
+    inner join teachers as a3 on a1.rut= a3.rut
+    where a1.api_key = '${api_key}'`, { type: Sequelize.QueryTypes.SELECT })
+
+
+
+    const transporter = nodemailer.createTransport(smtpTransport({
+        service: 'gmail',
+        auth: {
+            user: user,
+            pass: pass
+        },
+        tls: {
+            rejectUnauthorized: false
+        }
+    }))
+
+    const mailOptions = {
+        from: user,
+        to: `${email}`,
+        subject: `${subject}`,
+        text: `${message}`,
+        html: html,
+        token: token
+
+    };
+    transporter.sendMail(mailOptions, function(error, info) {
+
+
+
+        if (error) {
+            console.log(error);
+            res.status(500).send(error.message);
+        } else {
+            console.log("Email sent");
+            res.status(200).jsonp(mailOptions);
+        }
+        transporter.close();
+    });
+};
+
 
 module.exports = {
     authenticate,
     forgot,
-    chance
+    chance,
+    mail
 
 }
