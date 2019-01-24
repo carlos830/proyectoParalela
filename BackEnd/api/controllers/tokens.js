@@ -1,5 +1,7 @@
 'use strict';
 const nodemailer = require('nodemailer');
+const Nexmo = require('nexmo');
+const twilio = require('twilio');
 const Sequelize = require('sequelize');
 const { client } = require('pg');
 const sequelize = new Sequelize('postgres://postgres:dragon830@localhost:5432/paralelas')
@@ -158,18 +160,54 @@ function mail(req, res) {
             console.log(error);
             res.status(500).send(error.message);
         } else {
-            console.log("Email sent");
+            console.log("Envio de correo electronico exitoso");
             res.status(200).jsonp(mailOptions);
         }
         transporter.close();
     });
 };
 
+function sms(req, res) {
+    const params = req.body;
+    const api_key = params.api_key;
+    const message = params.message;
+    const phone = params.phone;
+    const token = params.token;
+    // const from = "+56933500027"
+
+
+    const nexmo = new Nexmo({
+        apiKey: '43158dea',
+        apiSecret: 'F4OoN4n5qHaI06Bq'
+    })
+
+    const from = 'Nexmo'
+    const to = `${phone}`
+    const text = `${message}`
+    nexmo.message.sendSms(from, to, text, { type: 'unicode' }, (error, responseData) => {
+        if (error) {
+            console.log(error);
+            res.status(500).send(error.message);
+        } else {
+
+            res.status(200).send(`Sms Enviado al numero ${phone}`);
+
+        }
+    });
+
+}
+
+function revisar(req, res) {
+    res.status(200).send('ok');
+}
+
 
 module.exports = {
     authenticate,
     forgot,
     chance,
-    mail
+    mail,
+    sms,
+    revisar
 
 }
