@@ -68,11 +68,11 @@ function forgot(req, res) {
         if (!token) {
             res.status(400).send({ message: "Usuario no existe" });
         } else {
-            if (token.email == email) {
-                res.status(200).send({ token })
-            } else {
-                res.status(404).send("Correo no coincide");
-            }
+            // if (token.email == email) {
+            res.status(200).send({ token })
+                // } else {
+                //   res.status(404).send("Correo no coincide");
+                //}
         }
     })
 
@@ -86,6 +86,7 @@ function chance(req, res) {
     const params = req.body;
     const rut = params.rut;
     const password = params.password;
+    const repeat = params.repeat;
     const newPassword = params.temporal
     const hashOld = encriptar(password);
     const hashNew = encriptar(newPassword);
@@ -98,14 +99,19 @@ function chance(req, res) {
                 if (!token) { //no existe usuario
                     res.status(400).send({ message: "El usuario no existe" });
                 } else { //Si existe comprobar contraseña
-                    if (token.password == hashOld) {
-                        token.updateAttributes({
-                            password: hashNew
-                        })
-                        res.status(200).send({ token });
+                    if (token.password == token.repeat) {
+                        if (token.password == hashOld) {
+                            token.updateAttributes({
+                                password: hashNew
+                            })
+                            res.status(200).send({ token });
+                        } else {
+                            res.status(404).send({ message: "El usuario no ha podido loguearse" });
+                        }
                     } else {
-                        res.status(404).send({ message: "El usuario no ha podido loguearse" });
+                        res.status(404).send("Contraseña y confirmacion no coinciden")
                     }
+
 
                 }
             }
