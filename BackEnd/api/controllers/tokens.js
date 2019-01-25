@@ -121,7 +121,7 @@ function chance(req, res) {
 
 function mail(req, res) {
     const params = req.body;
-    const api_key = params.api_key;
+    const apiKey = params.apiKey;
     const email = params.email;
     const html = params.html;
     const message = params.message;
@@ -131,7 +131,7 @@ function mail(req, res) {
     const pass = 'utem2018';
     sequelize.query(`select  a1.email from tokens as a1 inner join students a2 on a1.rut = a2.rut
     inner join teachers as a3 on a1.rut= a3.rut
-    where a1.api_key = '${api_key}'`, { type: Sequelize.QueryTypes.SELECT })
+    where a1.apiKey = '${apiKey}'`, { type: Sequelize.QueryTypes.SELECT })
 
 
 
@@ -172,7 +172,7 @@ function mail(req, res) {
 
 function sms(req, res) {
     const params = req.body;
-    const api_key = params.api_key;
+    const apiKey = params.apiKey;
     const message = params.message;
     const phone = params.phone;
     const token = params.token;
