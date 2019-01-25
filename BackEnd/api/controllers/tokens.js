@@ -40,7 +40,7 @@ function authenticate(req, res) {
                         token: jwt.createToken(token)
                     });
                 } else {
-                    let res2 = { apiKey: token["apiKey"], role: token.role, rut: token.rut };
+
                     res.status(200).send(token[0]);
                 }
 
