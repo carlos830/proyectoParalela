@@ -24,29 +24,26 @@ function authenticate(req, res) {
     const rut = params.rut;
     const password = params.password;
     const hashOld = encriptar(password);
-    Tokens.findOne({
-        where: { rut: rut }
-    })
-
-    .then(token => {
-            if (!token) {
+    sequelize.query(`select rut, role, apiKey from tokens
+   where rut = ${rut} and password = '${hashOld}' `, { type: Sequelize.QueryTypes.SELECT })
+        .then(token => {
+            if (token == '') {
                 res.status(400).send({ message: "El usuario no existe" });
             } else {
                 //Si el usuario existe comprobar la constrasenia
 
-                if (hashOld == token.password) {
-                    //Si la constraseña es la misma, devuleve los datos del usuario logueado
-                    if (params.gethash) {
-                        //Si viene un hash devolvermos un token de jwt-simple
-                        res.status(200).send({
-                            token: jwt.createToken(token)
-                        });
-                    } else {
-                        res.status(200).send({ token });
-                    }
+
+                //Si la constraseña es la misma, devuleve los datos del usuario logueado
+                if (params.gethash) {
+                    //Si viene un hash devolvermos un token de jwt-simple
+                    res.status(200).send({
+                        token: jwt.createToken(token)
+                    });
                 } else {
-                    res.status(404).send({ message: "hola" });
+                    let res2 = { apiKey: token["apiKey"], role: token.role, rut: token.rut };
+                    res.status(200).send(token[0]);
                 }
+
             }
         })
         .catch(err => {
