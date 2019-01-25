@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
         rut: DataTypes.INTEGER,
         password: DataTypes.STRING,
         email: DataTypes.STRING,
-        api_key: DataTypes.STRING,
+        apiKey: DataTypes.STRING,
         role: DataTypes.STRING
 
 
