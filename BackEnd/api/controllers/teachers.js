@@ -8,8 +8,8 @@ function teachers(req, res) {
     const params = req.body;
     const apiKey = params.apiKey;
     const rut = params.rut;
-    sequelize.query(`select a1.birthdate, a1.first_name as "firstName", a1.gender, a1.last_name as "lastName", 
-    a1.rut from teachers a1 inner join tokens a2 on a1.rut = a2.rut where a2.rut = ${rut}`, { type: Sequelize.QueryTypes.SELECT })
+    sequelize.query(`select a1.birthdate, a1.first_name as "firstName", (case when a1.gender=0 then 'FEMENINO' else 'MASCULINO' end)as gender, a1.last_name as "lastName", 
+    a1.rut from teachers a1 inner join tokens a2 on a1.rut = a2.rut where a2.rut = ${rut} and a2.apiKey ='${apiKey}'`, { type: Sequelize.QueryTypes.SELECT })
 
     .then(teacher => {
 

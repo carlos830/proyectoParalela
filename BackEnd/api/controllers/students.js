@@ -10,8 +10,8 @@ function Student(req, res) { //revisar
     const rut = params.rut;
     const apiKey = params.apiKey;
 
-    sequelize.query(`select a1.birthdate, a1.first_name as "firstName", a1.gender, a1.last_name as "lastName", 
-    a1.rut from students a1 inner join tokens a2 on a1.rut = a2.rut where a2.rut = ${rut} `, { type: Sequelize.QueryTypes.SELECT })
+    sequelize.query(`select a1.birthdate, a1.first_name as "firstName",(case when a1.gender =0 then 'FEMENINO' else 'MASCULINO' end) as gender, a1.last_name as "lastName", 
+    a1.rut from students a1 inner join tokens a2 on a1.rut = a2.rut where a2.rut = ${rut} and a2.apiKey = '${apiKey}' `, { type: Sequelize.QueryTypes.SELECT })
 
     .then(student => {
 
@@ -42,17 +42,17 @@ function ranking(req, res) {
 
     sequelize.query(`Select average,position, stddev,birthdate,"firstName",gender,"lastName",rut
     from (select rut, average, ROW_NUMBER () over (order by average desc) as position, "firstName",
-          "lastName",gender,stddev,birthdate
+          "lastName",gender,stddev,birthdate, "apiKey"
           from(select students.rut as rut, round(avg(grade),2) as average, students.first_name as "firstName",
-               round(coalesce(stddev_samp(finished_courses.grade),0),3) as stddev, students.birthdate as birthdate,
-               students.gender as gender, students.last_name as "lastName"
+               round(coalesce(stddev_samp(finished_courses.grade),0),3) as stddev, students.birthdate as birthdate, tokens.apiKey as "apiKey",
+               (case when students.gender=0 then 'FEMENINO' else 'MASCULINO' end )as gender, students.last_name as "lastName"
                from finished_courses join courses 
                on finished_courses.course_fk = courses.pk 
                join students on finished_courses.student_fk = students.pk 
                join tokens on students.rut = tokens.rut
                
-    group by students.rut, students.first_name,students.last_name, students.gender,students.birthdate) as foo) as foo2 
-    where rut = ${rut}`, { type: Sequelize.QueryTypes.SELECT })
+    group by tokens.apiKey, students.rut, students.first_name,students.last_name, students.gender,students.birthdate) as foo) as foo2 
+    where rut = ${rut} and "apiKey"= '${apiKey}'`, { type: Sequelize.QueryTypes.SELECT })
 
     .then(student => {
 

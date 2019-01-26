@@ -24,7 +24,7 @@ function authenticate(req, res) {
     const rut = params.rut;
     const password = params.password;
     const hashOld = encriptar(password);
-    sequelize.query(`select rut, role, "apiKey" from tokens
+    sequelize.query(`select rut, role, apiKey from tokens
    where rut = ${rut} and password = '${hashOld}' `, { type: Sequelize.QueryTypes.SELECT })
         .then(token => {
             if (token == '') {
@@ -41,7 +41,7 @@ function authenticate(req, res) {
                     });
                 } else {
 
-                    res.status(200).send(token[0]);
+                    res.status(200).send(token);
                 }
 
             }

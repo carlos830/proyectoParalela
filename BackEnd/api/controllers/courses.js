@@ -18,8 +18,8 @@ function estadistica(req, res) {
 
 
     sequelize.query(`select sum(status) as aproved,round(avg(grade),2) as average,a2.code as code_course,a2.ordinal as ordinal,
-    a2.section as section,a3.code as code_subject, a3.created as created,a3.name as name,a4.birthdate as birthdate_teacher, a4.first_name as firstName_teacher,
-    a4.gender as gender_teacher, a4.last_name as lastName_teacher, a4.rut as rut_teacher, a2.year as year, (count(a1.pk)-sum(status)) as reproved,
+    a2.section as section,a3.code as code_subject, a3.created as created,a3.name as name,a4.birthdate as birthdate, a4.first_name as firstName,
+    (case when a4.gender = 0 then 'FEMENINO' else 'MASCULINO' end) as gender, a4.last_name as lastName, a4.rut as rut, a2.year as year, (count(a1.pk)-sum(status)) as reproved,
     round(coalesce(stddev_samp(grade),0),3) as stddev , count(a1.pk) as total
     from finished_courses as a1 inner join courses as a2 on a2.pk = a1.course_fk inner join subjects as a3 on a2.subject_fk = a3.pk
        inner join teachers as a4 on a2.teacher_fk = a4.pk where a2.ordinal = ${ordinal} and a2.year = ${year} and a3.code = '${subjectCode}' 
@@ -52,14 +52,14 @@ function estadistica_student(req, res) {
     const apiKey = params.apiKey;
 
     sequelize.query(`select a3.code as code, a3.ordinal as ordinal, a3.year as year, a4.code as code_subject, a4.name as name, a4.created as created, a3.section as section,
-     a5.rut as rut_teacher, a5.first_name as firsName_teacher, a5.last_name as lastName_teacher, a5.gender as gender_teacher, a5.birthdate as birthdate_teacher, a3.section as section,
-     a1.rut as rut_student, a1.first_name as firstName_student, a1.last_name as lastName_student, a1.gender as gender_student, a1.birthdate as birthdate_student, a2.grade as grade,
+     a5.rut as rut_teacher, a5.first_name as firsName_teacher, a5.last_name as lastName_teacher, (case when a5.gender = 0 then 'FEMENINO' else 'MASCULINO' end )  as gender_teacher,
+      a5.birthdate as birthdate_teacher, a3.section as section,a1.rut as rut_student, a1.first_name as firstName_student, a1.last_name as lastName_student,
+      (case when a1.gender =0 then 'FEMENINO' else 'MASCULINO' end )  as gender_student, a1.birthdate as birthdate_student, a2.grade as grade,
      a2.status as status
     from students as a1 inner join finished_courses as a2 
     on a1.pk = a2.student_fk inner join courses as a3 on a2.course_fk = a3.pk inner join subjects as a4 on a3.subject_fk = a4.pk
     inner join teachers as a5 on a3.teacher_fk = a5.pk inner join tokens as a6 on a1.rut = a6.rut
-    where  a6.rut = ${rut}
-    `, { type: Sequelize.QueryTypes.SELECT })
+    where  a6.rut = ${rut} and a6.apiKey = '${apiKey}'`, { type: Sequelize.QueryTypes.SELECT })
 
     .then(estado_student => {
 
@@ -88,12 +88,12 @@ function estadistica_teachers(req, res) {
     const apiKey = params.apiKey;
 
     sequelize.query(`select sum(status) as aprobado,round(avg(grade),2) as promedio,a2.code as code_course, a2.ordinal as ordinal,  a2.section as section,
-    a3.code as code_subject , a3.created as created, a3.name as name,a4.birthdate as birthdate_teacher,
-    a4.first_name as firstName_teacher,a4.gender as gender_teacher, a4.last_name as lastName_teacher,
-    a4.rut as rut_teacher, a2.year as year,(count(a1.pk)-sum(status)) as reprobados, round(coalesce(stddev_samp(grade),0),3) as desviacion ,count(a1.pk) as total
+    a3.code as code_subject , a3.created as created, a3.name as name,a4.birthdate as birthdate,
+    a4.first_name as firstName, (case when a4.gender =0 then 'FEMENINO' else 'MASCULINO' end )as gender, a4.last_name as lastName,
+    a4.rut as rut, a2.year as year,(count(a1.pk)-sum(status)) as reprobados, round(coalesce(stddev_samp(grade),0),3) as desviacion ,count(a1.pk) as total
      from finished_courses as a1 inner join courses as a2 on a2.pk = a1.course_fk inner join subjects as a3 on a2.subject_fk = a3.pk
      inner join teachers as a4 on a2.teacher_fk = a4.pk inner join tokens as a5 on a4.rut=a5.rut 
-    where a4.rut = ${rut} 
+    where a4.rut = ${rut} and a5.apiKey = '${apiKey}'
     group by a1.course_fk, a3.name, a2.ordinal, a2.section, a3.code, a3.created, a2.code, a4.birthdate, a4.first_name, a4.last_name, a4.rut, a4.gender, a2.year order by a3.name`, { type: Sequelize.QueryTypes.SELECT })
         .then(estado_teacher => {
 
