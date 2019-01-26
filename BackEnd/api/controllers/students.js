@@ -42,7 +42,7 @@ function ranking(req, res) {
 
     sequelize.query(`Select average,position, stddev,birthdate,"firstName",gender,"lastName",rut
     from (select rut, average, ROW_NUMBER () over (order by average desc) as position, "firstName",
-          "lastName",gender,stddev,birthdate, 
+          "lastName",gender,stddev,birthdate
           from(select students.rut as rut, round(avg(grade),2) as average, students.first_name as "firstName",
                round(coalesce(stddev_samp(finished_courses.grade),0),3) as stddev, students.birthdate as birthdate,
                (case when students.gender=0 then 'FEMENINO' else 'MASCULINO' end )as gender, students.last_name as "lastName"
