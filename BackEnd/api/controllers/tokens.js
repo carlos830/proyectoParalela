@@ -25,7 +25,7 @@ function authenticate(req, res) {
     const password = params.password;
     const hashOld = encriptar(password);
     sequelize.query(`select rut, role, "apiKey" from tokens
-   where password = '${hashOld}'  `, { type: Sequelize.QueryTypes.SELECT })
+   where password = '${hashOld}' and rut = ${rut}  `, { type: Sequelize.QueryTypes.SELECT })
         .then(token => {
             if (token == '') {
                 res.status(400).send({ message: "El usuario no existe" });
