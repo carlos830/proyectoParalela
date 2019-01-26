@@ -50,9 +50,9 @@ function ranking(req, res) {
                on finished_courses.course_fk = courses.pk 
                join students on finished_courses.student_fk = students.pk 
                join tokens on students.rut = tokens.rut
-               where students.rut = ${rut}
+               
     group by students.rut, students.first_name,students.last_name, students.gender,students.birthdate) as foo) as foo2 
-    `, { type: Sequelize.QueryTypes.SELECT })
+    where rut = ${rut}`, { type: Sequelize.QueryTypes.SELECT })
 
     .then(student => {
 
