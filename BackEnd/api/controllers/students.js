@@ -11,7 +11,7 @@ function Student(req, res) {
     const apiKey = params.apiKey;
 
     sequelize.query(`select a1.birthdate as birthdate, a1.first_name as firstName, a1.gender as gender, a1.last_name as lastName, a1.rut as rut from students a1
-    inner join tokens a2 as on a1.rut = a2.rut
+    inner join tokens as a2 as on a1.rut = a2.rut
     where a1.rut =${rut} `, { type: Sequelize.QueryTypes.SELECT })
 
     .then(student => {
