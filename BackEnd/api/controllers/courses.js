@@ -56,7 +56,7 @@ function estadistica_student(req, res) {
     a1.first_name as firstName_student, a1.last_name as lastName_student, a1.gender as gender_student, a1.birthdate as birthdate_student, a2.grade as grade, a2.status as status
     from students as a1 inner join finished_courses as a2 
     on a1.pk = a2.student_fk inner join courses as a3 on a2.course_fk = a3.pk inner join subjects as a4 on a3.subject_fk = a4.pk
-    inner join teachers as a5 on a3.teacher_fk = a5.pk inner join tokens a6 on a1.rut = a6.rut
+    inner join teachers as a5 on a3.teacher_fk = a5.pk inner join tokens as a6 on a1.rut = a6.rut
     where a6.apiKey = '${apiKey}' and a6.rut = ${rut}
     `, { type: Sequelize.QueryTypes.SELECT })
 
