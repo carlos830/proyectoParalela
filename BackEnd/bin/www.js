@@ -1,7 +1,7 @@
 const http = require('http');
 const app = require('../app.js');
 
-const port = parseInt(process.debugPort.port, 10) || 8020;
+const port = parseInt(process.debugPort.port, 10) || 4000;
 
 app.set('port', port);
 
