@@ -10,7 +10,7 @@ function Student(req, res) { //revisar
     const rut = params.rut;
     const apiKey = params.apiKey;
 
-    sequelize.query(`select a1.birthdate, a1.first_name as firstName, a1.gender, a1.last_name as lastName, 
+    sequelize.query(`select a1.birthdate, a1.first_name as "firstName", a1.gender, a1.last_name as "lastName", 
     a1.rut from students a1 inner join tokens a2 on a1.rut = a2.rut where a2.rut = ${rut} `, { type: Sequelize.QueryTypes.SELECT })
 
     .then(student => {
