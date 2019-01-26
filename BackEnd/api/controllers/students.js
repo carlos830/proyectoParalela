@@ -46,7 +46,7 @@ function ranking(req, res) {
           lastName,gender,desviacion,birthdate
           from(select students.rut as rut, round(avg(grade),2) as promedio, students.first_name as firstName,
                round(coalesce(stddev_samp(finished_courses.grade),0),3) as desviacion, students.birthdate as birthdate,
-               students.gender as gender, students.last_name as lastName, tokens.apiKey as apiKey
+               students.gender as gender, students.last_name as lastName
                from finished_courses join courses 
                on finished_courses.course_fk = courses.pk 
                join students on finished_courses.student_fk = students.pk 
