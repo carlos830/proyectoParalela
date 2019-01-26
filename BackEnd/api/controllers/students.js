@@ -42,16 +42,16 @@ function ranking(req, res) {
 
     sequelize.query(`Select average,position, stddev,birthdate,"firstName",gender,"lastName",rut
     from (select rut, average, ROW_NUMBER () over (order by average desc) as position, "firstName",
-          "lastName",gender,stddev,birthdate, "apiKey"
+          "lastName",gender,stddev,birthdate, 
           from(select students.rut as rut, round(avg(grade),2) as average, students.first_name as "firstName",
-               round(coalesce(stddev_samp(finished_courses.grade),0),3) as stddev, students.birthdate as birthdate, tokens.apiKey as "apiKey",
+               round(coalesce(stddev_samp(finished_courses.grade),0),3) as stddev, students.birthdate as birthdate,
                (case when students.gender=0 then 'FEMENINO' else 'MASCULINO' end )as gender, students.last_name as "lastName"
                from finished_courses join courses 
                on finished_courses.course_fk = courses.pk 
                join students on finished_courses.student_fk = students.pk 
                join tokens on students.rut = tokens.rut
                
-    group by tokens.apiKey, students.rut, students.first_name,students.last_name, students.gender,students.birthdate) as foo) as foo2 
+    group by  students.rut, students.first_name,students.last_name, students.gender,students.birthdate) as foo) as foo2 
     where rut = ${rut}`, { type: Sequelize.QueryTypes.SELECT })
 
     .then(student => {
