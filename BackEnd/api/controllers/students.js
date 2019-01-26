@@ -40,12 +40,12 @@ function ranking(req, res) {
     const apiKey = params.apiKey;
 
 
-    sequelize.query(`Select promedio,posicion, desviacion,birthdate,firstName,gender,lastName,rut
-    from (select rut, promedio, ROW_NUMBER () over (order by promedio desc) as posicion, firstName,
-          lastName,gender,desviacion,birthdate
-          from(select students.rut as rut, round(avg(grade),2) as promedio, students.first_name as firstName,
-               round(coalesce(stddev_samp(finished_courses.grade),0),3) as desviacion, students.birthdate as birthdate,
-               students.gender as gender, students.last_name as lastName
+    sequelize.query(`Select average,position, stddev,birthdate,"firstName",gender,"lastName",rut
+    from (select rut, average, ROW_NUMBER () over (order by average desc) as position, "firstName",
+          "lastName",gender,stddev,birthdate
+          from(select students.rut as rut, round(avg(grade),2) as average, students.first_name as "firstName",
+               round(coalesce(stddev_samp(finished_courses.grade),0),3) as stddev, students.birthdate as birthdate,
+               students.gender as gender, students.last_name as "lastName"
                from finished_courses join courses 
                on finished_courses.course_fk = courses.pk 
                join students on finished_courses.student_fk = students.pk 
