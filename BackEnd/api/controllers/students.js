@@ -11,7 +11,7 @@ function Student(req, res) { //revisar
     const apiKey = params.apiKey;
 
     sequelize.query(`select a1.birthdate, a1.first_name as "firstName",(case when a1.gender =0 then 'FEMENINO' else 'MASCULINO' end) as gender, a1.last_name as "lastName", 
-    a1.rut from students a1 inner join tokens a2 on a1.rut = a2.rut where a2.rut = ${rut} `, { type: Sequelize.QueryTypes.SELECT })
+    a1.rut from students a1 inner join tokens a2 on a1.rut = a2.rut where a2.rut = ${rut}`, { type: Sequelize.QueryTypes.SELECT })
 
     .then(student => {
 
@@ -51,7 +51,7 @@ function ranking(req, res) {
                join students on finished_courses.student_fk = students.pk 
                join tokens on students.rut = tokens.rut
                
-    group by  students.rut, students.first_name,students.last_name, students.gender,students.birthdate) as foo) as foo2 
+    group by   students.rut, students.first_name,students.last_name, students.gender,students.birthdate) as foo) as foo2 
     where rut = ${rut}`, { type: Sequelize.QueryTypes.SELECT })
 
     .then(student => {

@@ -93,7 +93,7 @@ function estadistica_teachers(req, res) {
     a4.rut as rut, a2.year as year,(count(a1.pk)-sum(status)) as reprobados, round(coalesce(stddev_samp(grade),0),3) as desviacion ,count(a1.pk) as total
      from finished_courses as a1 inner join courses as a2 on a2.pk = a1.course_fk inner join subjects as a3 on a2.subject_fk = a3.pk
      inner join teachers as a4 on a2.teacher_fk = a4.pk inner join tokens as a5 on a4.rut=a5.rut 
-    where a4.rut = ${rut} 
+    where a4.rut = ${rut}
     group by a1.course_fk, a3.name, a2.ordinal, a2.section, a3.code, a3.created, a2.code, a4.birthdate, a4.first_name, a4.last_name, a4.rut, a4.gender, a2.year order by a3.name`, { type: Sequelize.QueryTypes.SELECT })
         .then(estado_teacher => {
 
