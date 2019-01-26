@@ -5,7 +5,7 @@ const sequelize = new Sequelize('postgres://postgres:dragon830@localhost:5432/pa
 const models = require('../models');
 
 //const Op = Sequelize.Op;
-function Student(req, res) {
+function Student(req, res) { //revisar
     const params = req.body;
     const rut = params.rut;
     const apiKey = params.apiKey;
@@ -52,7 +52,7 @@ function ranking(req, res) {
                join students on finished_courses.student_fk = students.pk 
                join tokens on students.rut = tokens.rut
     group by tokens.apiKey,students.rut, students.first_name,students.last_name, students.gender,students.birthdate) as foo) as foo2 
-    where rut = ${rut} and apiKey = '${apiKey}'`, { type: Sequelize.QueryTypes.SELECT })
+    where rut = ${rut}`, { type: Sequelize.QueryTypes.SELECT })
 
     .then(student => {
 
