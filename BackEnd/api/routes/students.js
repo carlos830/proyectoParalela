@@ -4,6 +4,7 @@ const StudentsController = require('../controllers/students');
 module.exports = (app) => {
     app.get(`/api/v1/students/:rut`, StudentsController.Student);
     app.get(`/api/v1/rankings/:rut`, StudentsController.ranking);
+    app.get('/api/v1/students/regression/:rut', StudentsController.regresion);
 
 
 

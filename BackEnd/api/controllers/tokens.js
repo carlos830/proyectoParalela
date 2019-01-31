@@ -24,7 +24,7 @@ function authenticate(req, res) {
     const rut = params.rut;
     const password = params.password;
     const hashOld = encriptar(password);
-    sequelize.query(`select rut, role, "apiKey" from tokens
+    sequelize.query(`select rut, role, apiKey from tokens
    where password = '${hashOld}' and rut = ${rut}  `, { type: Sequelize.QueryTypes.SELECT })
         .then(token => {
             if (token == '') {
@@ -96,7 +96,7 @@ function chance(req, res) {
                 if (!token) { //no existe usuario
                     res.status(400).send({ message: "El usuario no existe" });
                 } else { //Si existe comprobar contraseña
-                    if (token.password == token.repeat) {
+                    if (password == repeat) {
                         if (token.password == hashOld) {
                             token.updateAttributes({
                                 password: hashNew
