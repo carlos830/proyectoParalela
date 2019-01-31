@@ -81,31 +81,49 @@ function regresion(req, res) {
     const rut = params.rut;
     const apiKey = params.apiKey;
 
-    sequelize.query(`select promedio, stddev, year from
-    (select round(avg(a2.grade),2)  as promedio, round(coalesce(stddev_samp(a2.grade),0),3) as stddev, a3.year as year, a1.first_name as nombre
-    from students as a1 inner join finished_courses as a2 on a1.pk = a2.student_fk inner join courses as a3 on a2.course_fk = a3.pk
-    where a1.rut=${rut}
-    group by a3.year, a1.first_name) as nota
-    group by nota.promedio, nota.stddev, nota.nombre, nota.year
-    order by year desc`, { type: Sequelize.QueryTypes.SELECT })
+    sequelize.query(`select promedio, stddev, year, birthdate,firstName, lastName,
+	gender , rut from
+    (select round(avg(a2.grade),2)  as promedio, round(coalesce(stddev_samp(a2.grade),0),3) as stddev, a3.year as year, a1.first_name as firstName, a1.last_name as lastName,
+	 (case when a1.gender=0 then 'FEMENINO' else 'MASCULINO' end )as gender, a1.rut as rut, a1.birthdate as birthdate
+    from students as a1 inner join finished_courses as a2 on a1.pk = a2.student_fk inner join courses as a3 on a2.course_fk = a3.pk inner join tokens a4
+	 on a4.rut = a1.rut
+    where a1.rut=${rut} and a4.apiKey = '${apiKey}'
+    group by a3.year, a1.first_name, a1.last_name, a1.gender, a1.rut, a1.birthdate) as nota
+    group by nota.promedio, nota.stddev, nota.firstName, nota.year, nota.birthdate, nota.rut, nota.lastName, nota.gender
+    order by year desc
+`, { type: Sequelize.QueryTypes.SELECT })
 
-    .then(resultado => {
-        if (resultado == '') {
-            res.status(400).send({ message: "no existe estudiante" })
+    .then(student => {
+        if (student == '') {
+            res.status(400).send({ message: "Error de apiKey o rut mal ingresado" })
         } else {
             if (params.apiKey == apiKey) {
-                const result = regression.linear([
-                    [2010, 4.55],
-                    [2015, 4.63],
-                    [2014, 4.64],
-                    [2013, 4.77],
-                    [2011, 4.82],
-                    [2012, 5.09],
-                    [2016, 6.30]
-                ]);
+                var query = []
+                for (var i in student) {
+                    var sub_query = []
+                    sub_query.push(parseInt(student[i].year))
+                    sub_query.push(parseFloat(student[i].promedio))
+                        //const stddev = `stddev: ${sub_query.push(parseFloat(student[i].stddev))}`
+                    query.push(sub_query)
+                }
+                console.log(query)
+
+                const result = regression.linear(query);
                 const gradient = result.equation[0];
                 const yIntercept = result.equation[1];
-                res.status(200).send(result);
+
+                res.status(200).send([
+                    { data: result },
+                    {
+                        student: [{
+                            birthdate: student[0].birthdate,
+                            firstName: student[0].firstname,
+                            gender: student[0].gender,
+                            lastName: student[0].lastname,
+                            rut: student[0].rut
+                        }]
+                    }
+                ]);
             } else {
                 res.status(404).send({ message: "necesita volver a logear" })
             }
