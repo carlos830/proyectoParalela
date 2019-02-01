@@ -79,7 +79,7 @@ function ranking(req, res) {
 function regresion(req, res) {
     const params = req.body;
     var rut = req.params.rut;
-    var apiKey = req.header('apiKey');
+    var apiKey = req.header('X-API-KEY');
     //transforma rut para 
     rut = rut.replace(/\./g, '');
     rut = rut.replace(/\-/g, '');
