@@ -118,8 +118,8 @@ function estadistica_teachers(req, res) {
 
 function curso(req, res) {
     const params = req.body;
-    const apiKey = params.apiKey;
-    const subjectCode = params.subjectCode;
+    var apiKey = req.header('X-API-KEY');
+    var subjectCode = req.params.subjectCode;
 
     sequelize.query(`select year,code,name, created, average, stddev from(select a2.year as year, a1.code as code, a1.name as name, a1.created as created ,
     round(avg(grade),2) as average, round(coalesce(stddev_samp(grade),0),3) as stddev from subjects as a1 inner join courses as a2 on a1.pk = a2.subject_fk
@@ -131,7 +131,7 @@ function curso(req, res) {
         if (subject == '') {
             res.status(404).send({ message: "Curso no existe o se escribio mal codigo" })
         } else {
-            if (apiKey == params.apiKey) {
+            if (apiKey == req.header('X-API-KEY')) {
                 res.status(200).send([{
                     year: subject[0].year,
                     subject: {
