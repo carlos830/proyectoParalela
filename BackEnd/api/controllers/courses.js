@@ -116,10 +116,43 @@ function estadistica_teachers(req, res) {
         })
 }
 
+function curso(req, res) {
+    const params = req.body;
+    const apiKey = params.apiKey;
+    const subjectCode = params.subjectCode;
+
+    sequelize.query(`select year,code,name, created, average, stddev from(select a2.year as year, a1.code as code, a1.name as name, a1.created as created ,
+    round(avg(grade),2) as average, round(coalesce(stddev_samp(grade),0),3) as stddev from subjects as a1 inner join courses as a2 on a1.pk = a2.subject_fk
+     inner join finished_courses as a3 on a2.pk = a3.course_fk inner join teachers as a4 on a4.pk = a2.teacher_fk inner join tokens as a5 on a5.rut=a4.rut 
+	where a1.code = '${subjectCode}'
+    group by a2.year,a1.code, a1.name, a1.created) as promedio`, { type: Sequelize.QueryTypes.SELECT })
+
+    .then(subject => {
+        if (subject == '') {
+            res.status(404).send({ message: "Curso no existe o se escribio mal codigo" })
+        } else {
+            if (apiKey == params.apiKey) {
+                res.status(200).send([{
+                    year: subject[0].year,
+                    subject: {
+                        code: subject[0].code,
+                        name: subject[0].name,
+                        created: subject[0].created
+                    },
+                    average: subject[0].average,
+                    stddev: subject[0].stddev
+                }])
+            } else {
+                res.status(400).send({ message: "vuelva a logear" })
+            }
+        }
+    })
+}
 
 
 module.exports = {
     estadistica,
     estadistica_student,
-    estadistica_teachers
+    estadistica_teachers,
+    curso
 }
