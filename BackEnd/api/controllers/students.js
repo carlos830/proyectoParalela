@@ -86,7 +86,7 @@ function regresion(req, res) {
     rut = rut.substring(0, rut.length - 1);
 
     sequelize.query(`select promedio, stddev, year, birthdate,firstName, lastName,
-	gender , rut, "apiKey" from
+	gender , rut, apiKey from
     (select round(avg(a2.grade),2)  as promedio, round(coalesce(stddev_samp(a2.grade),0),3) as stddev, a3.year as year, a1.first_name as firstName, a1.last_name as lastName,
 	 (case when a1.gender=0 then 'FEMENINO' else 'MASCULINO' end )as gender, a1.rut as rut, a1.birthdate as birthdate, a4.apiKey as apiKey
     from students as a1 inner join finished_courses as a2 on a1.pk = a2.student_fk inner join courses as a3 on a2.course_fk = a3.pk inner join tokens a4
